@@ -2,28 +2,27 @@
 <meta charset="UTF-8">
 <link rel="stylesheet" href="index_style.css">
 
-
 <head>
     <title>Pagina de autentificare</title>
 </head>
 
 <body>
     <div class="login-form">
-        <span>Autentificare<br></span>
         <form>
-            
-            <div style="display: flexbox;grid-column: 1;grid-row: 2;align-items: end;">
-                <div style="align-items: end;">
+            <div style="display: grid;columns: 1; row-gap: 10px;">
+                <div>
                     <label>Email</label>
-                    <input type="email" name="Your Email" class="form_input" required>
+                    <input type="email" name="Your Email" class="login_input" placeholder="your-email@example.com">
                 </div>
                 <div>
                     <label>Password</label>
-                    <input type="password" name="password" class="form_input" required>
+                    <input type="password" name="password" class="login_input" required>
                 </div>
             </div>
-            <button class="login_button">Login</button>
-            <a href="register.html" class="button-style">Inregistrare</a>
+            <div>
+                <button class="button">Login</button>
+                <a href="register.html" class="button">Sign Up</a>
+            </div>
         </form>
     </div>
 </body>
