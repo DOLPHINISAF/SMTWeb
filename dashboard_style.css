@@ -1,0 +1,28 @@
+body{
+    margin: 0;
+}
+
+.header{
+background-color: green;
+display: flex;
+justify-content: space-between;
+align-items: center;
+height: 50pt;
+}
+.logout-button{
+    flex: 1;
+    text-align: right;
+    padding-right: 2%;
+}
+.api-key{
+    flex: 1;
+    text-align: left;
+    padding-left: 2%;
+    padding-right: 0px;
+    overflow: visible;
+}
+span{
+
+background-color: grey;
+border-radius: 15%;
+}
