@@ -10,26 +10,30 @@ if(isset($_SESSION)){
 <html>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="index_style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
 
 <head>
     <title>Pagina de autentificare</title>
 </head>
 
 <body>
-    <div class="login-form">
+    <div class="login-form"> 
         <form method="post" action="login_check.php">
-            <div style="display: grid;columns: 1; row-gap: 10px;">
-                <div style="display: grid; columns: 1;">
-                    <label>Username</label>
-                    <input type="text" class="login_input" id="loginname" placeholder="Enter your username">
+            <div style="text-align: center;padding-top:20px;padding-bottom:30px;font-weight: 500;font-size:25px;font-family: 'Roboto', sans-serif;">
+                Login
+            </div>
+            <div style="display: grid;columns: 1; row-gap: 13px; padding-bottom:10px">
+                <div>
+                    <input type="text" class="login_input" id="loginname" placeholder="Username">
                 </div>
-                <div style="display: grid; columns: 1;">
-                    <label>Password</label>
-                    <input type="password" class="login_input" placeholder="Enter your password" required>
+                <div>
+                    <input type="password" class="login_input" placeholder="Password" required>
                 </div>
 
             </div>
-            <div>
+            <div class="buttons">
                 <button class="button" onclick>Login</button>
                 <a href="register.html" class="button">Sign Up</a>
             </div>

@@ -1,39 +1,54 @@
 body{
   margin: 0px;
+  background-image: linear-gradient(to top right,#000000,#00ffcc);
 }
 
-.login-form{     
-  font-family: "Cascadia Code";  
-  font-weight: 400;
-  font-size: 20px;
+.login-form{
   display: flex;
   columns: 1;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  text-align: start;
 }
 .login_input{
-  font-size: 15px;
-  padding: 5px 5px;
+  font-size: 20px;
+  padding: 5px 10px;
   border-width: 1.5px;
-  border-color: rgb(54, 54, 54);
-  border-radius: 5px;
+  border-color: rgba(54, 54, 54, 0.199);
+  border-radius: 15px;
   border-style:double;
-}
-.login_button{
-  font-size: larger;
+  background-color: rgb(233, 233, 233);
+  color: rgb(150, 150, 150);
+  
 }
 .button{
   text-decoration: none;
+  text-align: center;
   font-family: "Cascadia Code";
+  font-family: 'Roboto', sans-serif;
   font-weight: 400;
   font-size: 20px;
-  padding: 5px 16px; /* Custom padding */
-  background-color: #797979; /* Button background color */
-  color: white; /* Text color */
-  border: none; /* Removing the default border */
-  border-radius: 10px; /* Rounded corners */
+  color: white;
+  padding: 7px 0px; /* Custom padding */
+  background-color: #28b498;
+  border: none;
+  border-radius: 16px;
   cursor: pointer;
-  margin: 10px 2px;
+  flex:1;
+  
+}
+form{
+  background-color: #FFFFFF;
+  padding-top: 20px;
+  padding-bottom: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 100px white;
+  
+}
+.buttons{
+  padding-top: 25px;
+  display: flex;
+  column-gap: 10px;
 }

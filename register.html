@@ -1,7 +1,9 @@
 <html>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="index_style.css">
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
 <head>
     <title>Pagina de autentificare</title>
 </head>
@@ -9,25 +11,24 @@
 <body>
     <div class="login-form">
         <form>
-            <div style="display: grid;columns: 1; row-gap: 10px;">
-                <div style="display: grid; columns: 1;">
-                    <label>Username</label>
-                    <input type="text" name="username" class="login_input" placeholder="username">
+            <div style="text-align: center;padding-top:20px;padding-bottom:30px;font-weight: 500;font-size:25px;font-family: 'Roboto', sans-serif;">
+                Register
+            </div>
+            <div style="display: grid;columns: 1; row-gap: 13px;">
+                <div>
+                    <input type="text" name="username" class="login_input" placeholder="Username">
                 </div>
-                <div style="display: grid; columns: 1;">
-                    <label>Email</label>
-                    <input type="email" name="email" class="login_input" placeholder="your-email@example.com">
+                <div>
+                    <input type="email" name="email" class="login_input" placeholder="Email">
                 </div>
-                <div style="display: grid; columns: 1;">
-                    <label>Password</label>
-                    <input type="password" name="password" class="login_input" required>
+                <div>
+                    <input type="password" name="password" class="login_input" placeholder="Password" required>
                 </div>
-                <div style="display: grid; columns: 1;">
-                    <label>Confirm Password</label>
-                    <input type="password" name="password" class="login_input" required>
+                <div>
+                    <input type="password" name="password" class="login_input" placeholder="Confirm Password" required>
                 </div>
             </div>
-            <div>
+            <div class="buttons">
                 <button class="button">Sign Up</button>
             </div>
         </form>
