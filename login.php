@@ -35,7 +35,7 @@ if(isset($_SESSION)){
             </div>
             <div class="buttons">
                 <button class="button" onclick>Login</button>
-                <a href="register.html" class="button">Sign Up</a>
+                <a href="/register" class="button">Sign Up</a>
             </div>
         </form>
     </div>

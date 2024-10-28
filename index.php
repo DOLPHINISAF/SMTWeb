@@ -5,7 +5,7 @@ if(isset($_SESSION)){
     exit();
 }
 else{
-    header("Location: login.php");
+    header("Location: login");
     exit();
 }
 
