@@ -1,7 +1,7 @@
 <?php
 
 if(isset($_SESSION)){
-    header("Location: dashboard.html");
+    header("Location: dashboard");
     exit();
 }
 else{

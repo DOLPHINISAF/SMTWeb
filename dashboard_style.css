@@ -10,9 +10,13 @@ align-items: center;
 height: 50pt;
 }
 .logout-button{
+    text-decoration: none;
+    font-family: 'Roboto', sans-serif;
+    color: white;
     flex: 1;
     text-align: right;
     padding-right: 2%;
+
 }
 .api-key{
     flex: 1;

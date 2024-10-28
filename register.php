@@ -1,3 +1,15 @@
+<?php
+session_start();
+
+$error_messsage = '';
+
+if(isset($_SESSION['error_message'])){
+    $error_messsage = $_SESSION['error_message'];
+}
+
+?>
+
+
 <html>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="index_style.css">
@@ -10,9 +22,12 @@
 
 <body>
     <div class="login-form">
-        <form>
+        <form method="post" action="register_check.php">
             <div style="text-align: center;padding-top:20px;padding-bottom:30px;font-weight: 500;font-size:25px;font-family: 'Roboto', sans-serif;">
                 Register
+            </div>
+            <div style="padding-bottom: 10px;">
+                <span class="error"><?php echo $error_messsage ?></span>
             </div>
             <div style="display: grid;columns: 1; row-gap: 13px;">
                 <div>
@@ -25,7 +40,7 @@
                     <input type="password" name="password" class="login_input" placeholder="Password" required>
                 </div>
                 <div>
-                    <input type="password" name="password" class="login_input" placeholder="Confirm Password" required>
+                    <input type="password" name="conf_password" class="login_input" placeholder="Confirm Password" required>
                 </div>
             </div>
             <div class="buttons">
@@ -35,5 +50,10 @@
     </div>
 </body>
 
+<?php
 
+if(isset($_SESSION['error_message'])){
+    unset($_SESSION['error_message']);
+}
+?>
 </html>
