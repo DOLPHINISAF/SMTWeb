@@ -41,7 +41,8 @@ else{
     $conn->close();
     $_SESSION['error_message'] = 'Incorrect username or password';
 
+    
+}
     header("Location: login");
     exit();
-}
 ?>
