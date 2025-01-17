@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+
 if(isset($_SESSION['error_message'])){
     unset($_SESSION['error_message']);
 }
@@ -15,8 +16,8 @@ if(!($password == $conf_password)){
 }
 else{
     $server_name = "localhost";
-    $sqlusername = "root";
-    $sqlpassword = "";
+    $sqlusername = "webscript";
+    $sqlpassword = "webscriptroot1";
     $dbname = "servermonitortool";
     $conn = "";
 
@@ -26,6 +27,7 @@ else{
     catch(mysqli_sql_exception){
         $_SESSION['error_message'] = 'Internal problem, please try again later';
     }
+
     if(!$conn){
         $_SESSION['error_message'] = 'Internal problem, please try again later';
     }
@@ -39,17 +41,26 @@ else{
         }
         else{
             $hashedPass = password_hash($password, PASSWORD_DEFAULT);
-            $apiKey = bin2hex(random_bytes(32));
-            $slqMessage = "INSERT INTO users (username,email, password, ApiKey) VALUES(
+
+            
+            $apiKey = bin2hex(random_bytes(24));
+            $apiKey = strtoupper($apiKey);
+            $slqMessage = "INSERT INTO users (username,email, password, api_key) VALUES(
                             '$username',
                             '$email',
                             '$hashedPass',
                             '$apiKey'
                             )";
+            try{
             $conn->query($slqMessage);
             $conn->close();
             header("Location: login");
             exit();
+            }
+            catch(mysqli_sql_exception){
+                $_SESSION['error_message'] = 'Internal error when quering, please try again later';
+            }
+            
 
         }
         $conn->close();
