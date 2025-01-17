@@ -9,8 +9,8 @@ $username = $_POST['username'];
 $password = $_POST['password'];
 
 $server_name = "localhost";
-$db_username = "root";
-$db_password = "";
+$db_username = "webscript";
+$db_password = "webscriptroot1";
 $db_name = "servermonitortool";
 $conn = "";
 
@@ -31,7 +31,7 @@ else{
         $row = mysqli_fetch_assoc($result);
         if(password_verify($password, $row['password'])){
             $_SESSION['username'] = $username;
-            $_SESSION['APIKEY'] = $row['ApiKey'];
+            $_SESSION['APIKEY'] = $row['api_key'];
             header("Location: dashboard");
             exit();
         }
