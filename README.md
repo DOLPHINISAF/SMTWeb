@@ -1,1 +1,2 @@
 This repository holds the web page of a project where you use an API in your own project that is used to send stats from your server to a cloud. By connecting to this website you have full remote monitoring of your app and create event(WIP).
+![alt text](/SMTWorks.png "How the application works")
