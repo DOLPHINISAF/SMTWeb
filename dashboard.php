@@ -55,7 +55,7 @@ if(isset($_SESSION['APIKEY'])){
                         <th>Name</th>
                         <th>Description</th>
                         <th>Value</th>
-                        <th>Status</th>
+                        <th>Unit</th>
                     </tr>
 
                     
