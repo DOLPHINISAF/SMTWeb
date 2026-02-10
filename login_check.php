@@ -24,8 +24,10 @@ if(!$conn){
     $_SESSION['error_message'] = 'Internal problem, please try again later';
 }
 else{
-    $sql_message = "SELECT * FROM users WHERE username = '$username'";
-    $result = $conn->query($sql_message);
+    $sql_message = $conn->prepare("SELECT * FROM users WHERE username = ?");
+    $sql_message->bind_param("s", $username);
+    $sql_message->execute();
+    $result = $sql_message->get_result();
 
     if($result->num_rows > 0){
         $row = mysqli_fetch_assoc($result);
