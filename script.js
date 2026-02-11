@@ -16,6 +16,16 @@ function GetActions(elem){
     
 }
 
+function ActivateAction(action_name){
+
+    msgjson = {
+        type:"action",
+        actionID:action_name
+    }
+
+    ws.send(JSON.stringify(msgjson));
+}
+
 //we call it to default the selection
 GetMonitorData(document.getElementById("monitor-button"));
 
