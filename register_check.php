@@ -32,9 +32,12 @@ else{
         $_SESSION['error_message'] = 'Internal problem, please try again later';
     }
     else{
-        $slqMessage = "SELECT * FROM users WHERE username = '$username'";
-        
-        $result = $conn->query($slqMessage);
+
+        $sql_message = $conn->prepare("SELECT * FROM users WHERE username = ?");
+        $sql_message->bind_param("s", $username);
+        $sql_message->execute();
+        $result = $sql_message->get_result();
+
 
         if($result->num_rows > 0){
             $_SESSION['error_message'] = 'Username already in use';
