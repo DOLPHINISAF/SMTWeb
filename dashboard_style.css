@@ -54,21 +54,54 @@ span{
 .option-panel{
     display:block;
     background-color: red;
-    width: 25%;
+    width: 20%;
     row-gap: 50%;
 }
+.data-panel{
+    display:block;
+    width: 80%;
+}
+
 .option-buttons{
     text-align: left;
     font-size: clamp(1rem,calc(1vw + 1vh), 3rem);
 }
-#live-data-table{
+.live-data-table{
     width: 75%;
+    border-collapse: collapse;
 }
+
 .table-rows{
     text-align: center;
     height: 50%;
 }
+table{
+    border-collapse: collapse;
+}
+td, th{
+    border-bottom: 1px solid rgb(145, 145, 145);
+}
+tbody tr:last-child td,
+tbody tr:last-child th {
+    border-bottom: none;
+}
+.name-column{
+
+}
+.description-column{
+
+}
+.value-column{
+
+}
+.unit-column{
+    
+}
+.action-button-column{
+
+}
+
+
 th{
     width: 12%;
-
 }
