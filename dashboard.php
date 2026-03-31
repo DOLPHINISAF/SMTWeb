@@ -12,7 +12,9 @@ if(isset($_SESSION['APIKEY'])){
     $ApiKey = $_SESSION['APIKEY'];
 }
 ?>
-
+<script>
+    const API_KEY = <?php echo json_encode($ApiKey); ?>;
+</script>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -49,24 +51,28 @@ if(isset($_SESSION['APIKEY'])){
                 </div>
             </div>
                
-            <div>
+            <div class="data-panel">
                 <table id="live-data-table">
-                    <tr class="table-rows">
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Value</th>
-                        <th>Unit</th>
-                    </tr>
+                    <thead class="table-rows">
+                        <th class="name-column">Name</th>
+                        <th class="description-column">Description</th>
+                        <th class="value-column">Value</th>
+                        <th class="unit-column">Unit</th>
+                    </thead>
 
+                    <tbody id="live-data-table-body">
+                    </tbody>
                     
                 </table>
                 <table id="action-table">
-                    <tr class="table-rows">
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th><button>
-                        </button></th>
-                    </tr>
+                    <thead class="table-rows">
+                        <th class="name-column">Name</th>
+                        <th class="description-column">Description</th>
+                        <th class="action-button-column">Activate</th>
+                    </thead>
+
+                    <tbody id="action-table-body">
+                    </tbody>
 
                     
                 </table>
