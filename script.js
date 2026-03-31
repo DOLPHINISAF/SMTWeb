@@ -56,31 +56,82 @@ ws.addEventListener("open", () =>{
 
 ws.addEventListener("message", (message)=>{
     msgjson = JSON.parse(message.data);
-
+    console.log("Received Json")
     if(msgjson.type){
         if(msgjson.type === "data"){
+            //if the live data row doesn't exist we just add it to the table
+            if(typeof nameID == "undefined"){
+                AddLiveDataRow(msgjson)
+            }
             nameID = msgjson.nameID;
             dataElement = document.getElementById(`.${nameID}`);
 
             document.getElementById(`${nameID}-value`).innerHTML = msgjson.value;
         }
         else if(msgjson.type === "add"){
+            AddLiveDataRow(msgjson)
+        }
 
+    }
+});
+
+function AddLiveDataRow(msgjson){
             let nameID = msgjson.nameID;
             let description = msgjson.description;
             let unit = msgjson.unit;
             let value = "NULL";
 
-            document.getElementById("live-data-table").innerHTML=
+    document.getElementById("live-data-table-body").innerHTML +=
                 `<tr id="${nameID}" class="table-rows">
-                    <th>${nameID}</th>
-                    <th>${description}</th>
-                    <th id = "${nameID}-value">${value}</th>
-                    <th>${unit}</th>
-                </tr>`;
-        
-        }
-        
-    }
-});
+            <th class="name-column">${nameID}</th>
+            <th class="description-column">${description}</th>
+            <th id = "${nameID}-value" class="value-column">${value}</th>
+            <th class="unit-column">${unit}</th>
+        </tr>`;
+}
+function AddActionRow(msgjson){
+    let actionID = msgjson.actionID
+    let actionDescription = msgjson.actionDescription
 
+    document.getElementById("action-table-body").innerHTML +=
+        `<tr id="${actionID}" class="table-rows">
+            <th class="name-column">${actionID}</th>
+            <th class="description-column">${actionDescription}</th>
+            <th class="action-button-column"><button onclick="ActivateAction('${actionID}')">Run</button></th>
+                </tr>`;
+}
+
+function AddAction(actionName, actionDescription = "Uninitialised Description"){
+    actionjson = {
+        actionID: actionName,
+        actionDescription, actionDescription
+    }
+
+    AddActionRow(actionjson)
+}
+function AddExample(){
+    examplejson = {}
+
+    //We add a test live data with all the parameters filled in
+
+    examplejson = {
+        nameID: 'Test_Name',
+        description: "Test_Description",
+        unit: 'Test_Unit',
+        value: "NULL"
+    }
+    AddLiveDataRow(examplejson);
+
+
+    //we add a test action with needed parameters
+
+    examplejson = {
+        actionID: 'Test_Action_Name',
+        actionDescription: 'Test_Action_Description',
+    }
+
+    AddActionRow(examplejson);
+
+}
+
+AddExample()
