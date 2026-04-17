@@ -14,6 +14,7 @@ if(isset($_SESSION['APIKEY'])){
 ?>
 <script>
     const API_KEY = <?php echo json_encode($ApiKey); ?>;
+
 </script>
 
 <!DOCTYPE html>
@@ -30,8 +31,11 @@ if(isset($_SESSION['APIKEY'])){
 </head>
 <body>
         <div class="header">
-            <div class="api-key">
-              <span>API Key: <?php echo $ApiKey; ?></span>
+
+            <div id="api-key-div" class="api-key-div-style">
+                <span class="api-key">Your API Key: <span id="api-key-text">************************************************</span></span>
+                <button onclick="toggleApiKey()" class="api-btn">👁️</button>
+                <button onclick="copyApiKey()" class="api-btn">📋</button>
             </div>
             <div class="dashboard-title">
                 Dashboard
@@ -39,6 +43,8 @@ if(isset($_SESSION['APIKEY'])){
             <div class="logout">
                <a href="logout.php" class="logout-button">Log out</a>
             </div>
+            
+            <div id="toast" class="toast"></div>
         </div>
         
         <div class="interact-panel">
@@ -79,9 +85,6 @@ if(isset($_SESSION['APIKEY'])){
             </div>
         </div>
 
-        <script src="script.js">
-            
-        </script>
-             
+        <script src="script.js"></script>
 </body>
 </html>
