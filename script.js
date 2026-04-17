@@ -1,6 +1,7 @@
 
-UNSELECTED_BGCOLOR = "red";
-SELECTED_BGCOLOR = "white"
+UNSELECTED_BGCOLOR = "#28b498";
+SELECTED_BGCOLOR = "#F2F2F2"
+
 function GetMonitorData(elem){
     document.getElementById("action-button").style.backgroundColor = UNSELECTED_BGCOLOR;
     elem.style.backgroundColor  = SELECTED_BGCOLOR;
@@ -16,6 +17,37 @@ function GetActions(elem){
     
 }
 
+let visible = false;
+
+function toggleApiKey() {
+    const el = document.getElementById("api-key-text");
+
+    if (visible) {
+        el.innerHTML = "****************************************";
+    } else {
+        el.innerHTML = API_KEY;
+    }
+
+    visible = !visible;
+}
+function copyApiKey() {
+    const el = document.getElementById("api-key-text");
+
+    navigator.clipboard.writeText(API_KEY);
+
+    // Optional feedback
+    showToast("API key copied!")
+}
+function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2000);
+}
+
 function ActivateAction(actionID){
 
     msgjson = {
@@ -25,7 +57,7 @@ function ActivateAction(actionID){
     }
 
     try{
-    ws.send(JSON.stringify(msgjson));
+        ws.send(JSON.stringify(msgjson));
         console.log(`Sent ActivateAction to server, action: ${actionID}`)
     }
     catch (error) {
@@ -35,7 +67,8 @@ function ActivateAction(actionID){
 }
 
 //we call it to default the selection
-GetMonitorData(document.getElementById("monitor-button"));
+//GetMonitorData(document.getElementById("monitor-button"));
+GetActions(document.getElementById("action-button"));
 
 //websocket path to backend server
 const ws = new WebSocket('ws://dolphinsibiu.ddns.net:1337');
@@ -55,34 +88,53 @@ ws.addEventListener("open", () =>{
 })
 
 ws.addEventListener("message", (message)=>{
-    msgjson = JSON.parse(message.data);
     console.log("Received Json")
+    
+    msgjson = JSON.parse(message.data);
+    console.log(msgjson)
     if(msgjson.type){
         if(msgjson.type === "data"){
             //if the live data row doesn't exist we just add it to the table
-            if(typeof nameID == "undefined"){
+            if(document.getElementById(`${msgjson.nameID}-value`) === null){
                 AddLiveDataRow(msgjson)
             }
+            
             nameID = msgjson.nameID;
             dataElement = document.getElementById(`.${nameID}`);
 
-            document.getElementById(`${nameID}-value`).innerHTML = msgjson.value;
+            document.getElementById(`${nameID}-value`).innerHTML = msgjson.data;
         }
         else if(msgjson.type === "add"){
             AddLiveDataRow(msgjson)
         }
-
+        
     }
 });
 
+function UpdateLiveDataRow(msgjson){
+    //if the live data row doesn't exist we just add it to the table
+    if(document.getElementById(`${msgjson.nameID}-value`) === null){
+            AddLiveDataRow(msgjson)
+    }
+            
+    nameID = msgjson.nameID;
+    dataElement = document.getElementById(`.${nameID}`);
+
+    document.getElementById(`${nameID}-value`).innerHTML = msgjson.data;
+}
+
 function AddLiveDataRow(msgjson){
-            let nameID = msgjson.nameID;
-            let description = msgjson.description;
-            let unit = msgjson.unit;
-            let value = "NULL";
+    //if the parameter already exists we dont add it lol
+    if(document.getElementById(`${msgjson.nameID}-value`)){
+        return;
+    }
+    let nameID = msgjson.nameID;
+    let description = msgjson.description;
+    let unit = msgjson.unit;
+    let value = "0";
 
     document.getElementById("live-data-table-body").innerHTML +=
-                `<tr id="${nameID}" class="table-rows">
+        `<tr id="${nameID}" class="table-rows">
             <th class="name-column">${nameID}</th>
             <th class="description-column">${description}</th>
             <th id = "${nameID}-value" class="value-column">${value}</th>
@@ -97,9 +149,10 @@ function AddActionRow(msgjson){
         `<tr id="${actionID}" class="table-rows">
             <th class="name-column">${actionID}</th>
             <th class="description-column">${actionDescription}</th>
-            <th class="action-button-column"><button onclick="ActivateAction('${actionID}')">Run</button></th>
-                </tr>`;
+            <th class="action-button-column"><button onclick="ActivateAction('${actionID}')" class="action-run-button">Run</button></th>
+        </tr>`;
 }
+
 
 function AddAction(actionName, actionDescription = "Uninitialised Description"){
     actionjson = {
@@ -109,6 +162,9 @@ function AddAction(actionName, actionDescription = "Uninitialised Description"){
 
     AddActionRow(actionjson)
 }
+
+
+
 function AddExample(){
     examplejson = {}
 
