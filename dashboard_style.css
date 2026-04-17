@@ -1,5 +1,8 @@
 body{
     margin: 0;
+    display:flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
 .header{
@@ -8,17 +11,23 @@ display: flex;
 justify-content: space-between;
 align-items: center;
 height: 7vh;
+padding-left:0.5vw;
+padding-right:0.5vw;
 }
 .api-key{
-    flex: 2;
     text-align: left;
-    padding-left: 2%;
-    padding-right: 0px;
     overflow: visible;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 5px;
+    font-family: 'roboto';
+}
+.api-key-div-style{
+    flex: 3;
 }
 .logout{
     text-align: right;
-    flex:2;
+    flex:3;
     
 }
 .logout-button{
@@ -29,7 +38,6 @@ height: 7vh;
     color: #28b498;
     text-align: right;
     padding: 0.4vw 0.9vw;
-    margin-right: 1vw;
     border: none;
     border-radius: 16px;
     cursor: pointer;
@@ -43,40 +51,54 @@ height: 7vh;
     text-align: center;
 }
 span{
-    background-color: grey;
-    border-radius: 15%;
+    background-color: white;
 }
 
 .interact-panel{
     display: flex;
     height: 93vh;
+    border-top: 1px solid black;
 }
 .option-panel{
     display:block;
-    background-color: red;
-    width: 20%;
-    row-gap: 50%;
+    background-color: #28b498;
+    width: 15vw;
+    
 }
 .data-panel{
     display:block;
-    width: 80%;
+    width: 85vw;
+    background-color: #F2F2F2;
+    
+    border-width: 1px;
+    border-color: black;
 }
 
 .option-buttons{
     text-align: left;
     font-size: clamp(1rem,calc(1vw + 1vh), 3rem);
+    font-family: 'roboto';
+    padding-left: 0.5vw;
+    border-radius: 5px;
+    margin-right:5px;
+    margin-left:5px;
 }
 .live-data-table{
-    width: 75%;
+    width: 100%;
     border-collapse: collapse;
 }
 
 .table-rows{
     text-align: center;
     height: 50%;
+    
 }
 table{
     border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+    font-family: 'roboto';
+    font-weight: 500;
 }
 td, th{
     border-bottom: 1px solid rgb(145, 145, 145);
@@ -103,5 +125,49 @@ tbody tr:last-child th {
 
 
 th{
-    width: 12%;
+    width: 1%;
+    
+}
+thead{
+    font-size: 100%;
+}
+tbody{
+    font-size: 80%;
+}
+.action-run-button{
+    background-color: #28b498;
+    font-size: 2vh;
+    text-decoration: none;
+    font-family: 'Roboto', sans-serif;
+    color: #ffffff;
+    text-align: center;
+    padding: 0.4vw 1.2svw;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #333;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    font-family: 'Roboto', sans-serif;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+.api-btn{
+    background-color: #176d5c;
+    border: none;
+    cursor: pointer;
 }
