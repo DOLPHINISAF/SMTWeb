@@ -69,6 +69,8 @@ function ActivateAction(actionID){
 //we call it to default the selection
 GetMonitorData(document.getElementById("monitor-button"));
 //GetActions(document.getElementById("action-button"));
+GetMonitorData(document.getElementById("monitor-button"));
+//GetActions(document.getElementById("action-button"));
 
 //websocket path to backend server
 const ws = new WebSocket('ws://dolphinsibiu.ddns.net:1337');
@@ -87,6 +89,8 @@ ws.addEventListener("open", () =>{
     console.log("Connected websocket to backend server.")
 
     GetUserConfig();
+
+    GetUserConfig();
 })
 
 ws.addEventListener("message", (message)=>{
@@ -96,6 +100,7 @@ ws.addEventListener("message", (message)=>{
     console.log(msgjson)
     if(msgjson.type){
         if(msgjson.type === "data"){
+            
             
             //if the live data row doesn't exist we just add it to the table
             if(document.getElementById(`${msgjson.nameID}-value`) === null){
@@ -109,6 +114,22 @@ ws.addEventListener("message", (message)=>{
         }
         else if(msgjson.type === "add"){
             AddLiveDataRow(msgjson)
+        }
+        else if(msgjson.type === "user-config"){
+
+            console.log(msgjson)
+            if(msgjson.parameters.length > 0){
+
+                msgjson.parameters.forEach(parameter => {
+                    AddLiveDataRow(parameter);
+                });
+            }
+            if(msgjson.actions.length > 0){
+
+                msgjson.actions.forEach(action => {
+                    AddActionRow(action);
+                });
+            }
         }
         else if(msgjson.type === "user-config"){
 
@@ -148,6 +169,7 @@ function AddLiveDataRow(msgjson){
         return;
     }
 
+
     let nameID = msgjson.nameID;
     let description = msgjson.description;
     let unit = msgjson.unit;
@@ -174,8 +196,30 @@ function AddLiveDataRow(msgjson){
     tbody.insertBefore(rowData,bottomRow);
 }
 
+    const tbody = document.getElementById("live-data-table-body");
+    const bottomRow = document.getElementById("dataInsertRow");
+    
+
+    const rowData = document.createElement("tr");
+    rowData.className = "table-rows"
+    rowData.id = nameID;
+    rowData.innerHTML = 
+        `
+            <td id="${nameID}"class="name-column">${nameID}</td>
+            <td class="description-column">${description}</td>
+            <td id="${nameID}-value" class="value-column">${value}</td>
+            <td class="unit-column">${unit}</td>
+            <td class="edit-column"><button class="remove-button" onclick="DeleteItem('${nameID}', 'parameter')">Delete</button></td>
+        `;
+        //we add id to value so we can modify it when data arrives
+        //we add id to name so we can check if already exists
+
+    tbody.insertBefore(rowData,bottomRow);
+}
+
 function AddActionRow(msgjson){
     let actionID = msgjson.actionID
+    let actionDescription = msgjson.actiondescription
     let actionDescription = msgjson.actiondescription
 
     const tbody = document.getElementById("action-table-body");
