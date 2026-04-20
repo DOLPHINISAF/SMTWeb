@@ -33,7 +33,7 @@ if(isset($_SESSION['APIKEY'])){
         <div class="header">
 
             <div id="api-key-div" class="api-key-div-style">
-                <span class="api-key">Your API Key: <span id="api-key-text">************************************************</span></span>
+                <span class="api-key">Key: <span id="api-key-text">************************************************</span></span>
                 <button onclick="toggleApiKey()" class="api-btn">👁️</button>
                 <button onclick="copyApiKey()" class="api-btn">📋</button>
             </div>

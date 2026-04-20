@@ -45,22 +45,29 @@ else{
         else{
             $hashedPass = password_hash($password, PASSWORD_DEFAULT);
 
+            $userConfig = json_encode([
+                "actions" => [],
+                "parameters" => []
+                ]);
             
             $apiKey = bin2hex(random_bytes(24));
             $apiKey = strtoupper($apiKey);
-            $slqMessage = "INSERT INTO users (username,email, password, api_key) VALUES(
+            $slqMessage = "INSERT INTO users (username,email, password, api_key, user_config) VALUES(
                             '$username',
                             '$email',
                             '$hashedPass',
-                            '$apiKey'
+                            '$apiKey',
+                            '$userConfig'
                             )";
             try{
+            
             $conn->query($slqMessage);
             $conn->close();
             header("Location: login");
             exit();
             }
-            catch(mysqli_sql_exception){
+            catch(mysqli_sql_exception $e){
+                echo $e->getMessage();
                 $_SESSION['error_message'] = 'Internal error when quering, please try again later';
             }
             

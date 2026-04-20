@@ -2,6 +2,10 @@
 UNSELECTED_BGCOLOR = "#28b498";
 SELECTED_BGCOLOR = "#F2F2F2"
 
+let visible = false;
+//websocket path to backend server
+const ws = new WebSocket('ws://dolphinsibiu.ddns.net:1337');
+
 function GetMonitorData(elem){
     document.getElementById("action-button").style.backgroundColor = UNSELECTED_BGCOLOR;
     elem.style.backgroundColor  = SELECTED_BGCOLOR;
@@ -16,8 +20,6 @@ function GetActions(elem){
     document.getElementById("action-table").style.display = "block";
     
 }
-
-let visible = false;
 
 function toggleApiKey() {
     const el = document.getElementById("api-key-text");
@@ -52,8 +54,7 @@ function ActivateAction(actionID){
 
     msgjson = {
         type:"run_action",
-        actionID:actionID,
-        APIKey: API_KEY
+        actionID:actionID
     }
 
     try{
@@ -70,18 +71,15 @@ function ActivateAction(actionID){
 GetMonitorData(document.getElementById("monitor-button"));
 //GetActions(document.getElementById("action-button"));
 
-//websocket path to backend server
-const ws = new WebSocket('ws://dolphinsibiu.ddns.net:1337');
 
 //used to announce server that user is online and can receive data
 ws.addEventListener("open", () =>{
     console.log(API_KEY)
     //we make the string json with needed data
-        authdata = {
-        type:"auth",
-        APIKey:API_KEY,
-        source:"client"
-    }
+    const authdata = {
+        type:"auth-client",
+        APIKey:API_KEY
+        }
     ws.send(JSON.stringify(authdata));
 
     console.log("Connected websocket to backend server.")
@@ -90,29 +88,31 @@ ws.addEventListener("open", () =>{
 })
 
 ws.addEventListener("message", (message)=>{
-    console.log("Received Json")
     
-    msgjson = JSON.parse(message.data);
-    console.log(msgjson)
-    if(msgjson.type){
-        if(msgjson.type === "data"){
-            
+    let msgjson = {};
+    try{
+        msgjson = JSON.parse(message.data);
+    }
+    catch(e){
+        console.log("Received message is not valid json: " + e);
+        return;
+    }
+
+    switch(msgjson.type){
+        case "data":
             //if the live data row doesn't exist we just add it to the table
             if(document.getElementById(`${msgjson.nameID}-value`) === null){
                 AddLiveDataRow(msgjson)
             }
-            
             nameID = msgjson.nameID;
             dataElement = document.getElementById(`.${nameID}`);
 
             document.getElementById(`${nameID}-value`).innerHTML = msgjson.data;
-        }
-        else if(msgjson.type === "add"){
+            break;
+        case "add":
             AddLiveDataRow(msgjson)
-        }
-        else if(msgjson.type === "user-config"){
-
-            console.log(msgjson)
+            break;
+        case "user-config":
             if(msgjson.parameters.length > 0){
 
                 msgjson.parameters.forEach(parameter => {
@@ -125,9 +125,11 @@ ws.addEventListener("message", (message)=>{
                     AddActionRow(action);
                 });
             }
-        }
-        
+            break;
+        default:
+            console.log("Received unknown message");
     }
+
 });
 
 function UpdateLiveDataRow(msgjson){
@@ -139,7 +141,7 @@ function UpdateLiveDataRow(msgjson){
     nameID = msgjson.nameID;
     dataElement = document.getElementById(`.${nameID}`);
 
-    document.getElementById(`${nameID}-value`).innerHTML = msgjson.data;
+    document.getElementById(`${nameID}-value`).innerHTML = msgjson.value;
 }
 
 function AddLiveDataRow(msgjson){
@@ -151,7 +153,7 @@ function AddLiveDataRow(msgjson){
     let nameID = msgjson.nameID;
     let description = msgjson.description;
     let unit = msgjson.unit;
-    let value = "0";
+    let value = "-";
 
     const tbody = document.getElementById("live-data-table-body");
     const bottomRow = document.getElementById("dataInsertRow");
@@ -197,21 +199,22 @@ function AddActionRow(msgjson){
 }
 //we fill the dashboard with all of users parameters / actions
 function GetUserConfig(){
-    const msgJson = {};
-    msgJson.APIKey = API_KEY;
-    msgJson.type = "load-user-config"
+    const configRequestJson = {};
+    
+    configRequestJson.type = "load-user-config"
 
-    ws.send(JSON.stringify(msgJson))
+    ws.send(JSON.stringify(configRequestJson))
 
 }
 
 //method to send user created parameter / action to backend for storing in db
 function SaveUserItem(storeType){
 
-    const msgJson = {};
-    msgJson.APIKey = API_KEY;
-    msgJson.type = "store"
-    msgJson.storetype = storeType
+    const itemStoreJson = {};
+    itemStoreJson.APIKey = API_KEY;
+    itemStoreJson.type = "store"
+    itemStoreJson.storetype = storeType
+
     if(storeType === 'parameter'){
         const name = document.getElementById("parameter-name-input").value;
         document.getElementById("parameter-name-input").value = "";
@@ -227,18 +230,18 @@ function SaveUserItem(storeType){
             return;
         }
 
-        msgJson.nameID = name;
-        msgJson.description = description;
-        msgJson.unit = unit;
+        itemStoreJson.nameID = name;
+        itemStoreJson.description = description;
+        itemStoreJson.unit = unit;
 
         if(document.getElementById(`${name}`)){
             showToast("Parameter already exists")
         }
         
         
-        AddLiveDataRow(msgJson)
+        AddLiveDataRow(itemStoreJson)
 
-        ws.send(JSON.stringify(msgJson))
+        ws.send(JSON.stringify(itemStoreJson))
         
     }
 
@@ -254,68 +257,29 @@ function SaveUserItem(storeType){
             return;
         }
 
-        msgJson.actionID = name;
-        msgJson.actiondescription = description;
+        itemStoreJson.actionID = name;
+        itemStoreJson.actiondescription = description;
 
         if(document.getElementById(`${name}`)){
             showToast("Parameter already exists")
         }
 
-        AddActionRow(msgJson)
+        AddActionRow(itemStoreJson)
 
-        ws.send(JSON.stringify(msgJson))
+        ws.send(JSON.stringify(itemStoreJson))
     }
-    console.log(msgJson)
+    console.log(itemStoreJson)
 }
 
 function DeleteItem(name, itemType){
-    const msgJson = {}
-    msgJson.APIKey = API_KEY;
-    msgJson.type = "remove"
-    msgJson.itemtype = itemType;
-    msgJson.name = name;
+    const deleteItemJson = {}
+    deleteItemJson.APIKey = API_KEY;
+    deleteItemJson.type = "remove"
+    deleteItemJson.itemtype = itemType;
+    deleteItemJson.name = name;
 
-    ws.send(JSON.stringify(msgJson));
+    ws.send(JSON.stringify(deleteItemJson));
     console.log("Sent delete json")
 
     document.getElementById(name)?.remove();
 }
-
-//for console use testing
-function AddTestAction(actionName, actionDescription = "Uninitialised Description"){
-    actionjson = {
-        actionID: actionName,
-        actionDescription, actionDescription
-    }
-
-    AddActionRow(actionjson)
-}
-
-
-
-function AddExample(){
-    examplejson = {}
-
-    //We add a test live data with all the parameters filled in
-
-    examplejson = {
-        nameID: 'Test_Name',
-        description: "Test_Description",
-        unit: 'Test_Unit',
-        value: "NULL"
-    }
-    AddLiveDataRow(examplejson);
-
-
-    //we add a test action with needed parameters
-
-    examplejson = {
-        actionID: 'Test_Action_Name',
-        actionDescription: 'Test_Action_Description',
-    }
-
-    AddActionRow(examplejson);
-
-}
-
-AddExample()
