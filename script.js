@@ -69,11 +69,6 @@ function ActivateAction(actionID){
 //we call it to default the selection
 GetMonitorData(document.getElementById("monitor-button"));
 //GetActions(document.getElementById("action-button"));
-<<<<<<< HEAD
-GetMonitorData(document.getElementById("monitor-button"));
-//GetActions(document.getElementById("action-button"));
-=======
->>>>>>> 10c93b8d5092e82a88f72ab014355562d90f16b8
 
 //websocket path to backend server
 const ws = new WebSocket('ws://dolphinsibiu.ddns.net:1337');
@@ -92,11 +87,6 @@ ws.addEventListener("open", () =>{
     console.log("Connected websocket to backend server.")
 
     GetUserConfig();
-<<<<<<< HEAD
-
-    GetUserConfig();
-=======
->>>>>>> 10c93b8d5092e82a88f72ab014355562d90f16b8
 })
 
 ws.addEventListener("message", (message)=>{
@@ -107,10 +97,6 @@ ws.addEventListener("message", (message)=>{
     if(msgjson.type){
         if(msgjson.type === "data"){
             
-<<<<<<< HEAD
-            
-=======
->>>>>>> 10c93b8d5092e82a88f72ab014355562d90f16b8
             //if the live data row doesn't exist we just add it to the table
             if(document.getElementById(`${msgjson.nameID}-value`) === null){
                 AddLiveDataRow(msgjson)
@@ -140,25 +126,6 @@ ws.addEventListener("message", (message)=>{
                 });
             }
         }
-<<<<<<< HEAD
-        else if(msgjson.type === "user-config"){
-
-            console.log(msgjson)
-            if(msgjson.parameters.length > 0){
-
-                msgjson.parameters.forEach(parameter => {
-                    AddLiveDataRow(parameter);
-                });
-            }
-            if(msgjson.actions.length > 0){
-
-                msgjson.actions.forEach(action => {
-                    AddActionRow(action);
-                });
-            }
-        }
-=======
->>>>>>> 10c93b8d5092e82a88f72ab014355562d90f16b8
         
     }
 });
@@ -181,10 +148,6 @@ function AddLiveDataRow(msgjson){
         return;
     }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 10c93b8d5092e82a88f72ab014355562d90f16b8
     let nameID = msgjson.nameID;
     let description = msgjson.description;
     let unit = msgjson.unit;
@@ -211,37 +174,9 @@ function AddLiveDataRow(msgjson){
     tbody.insertBefore(rowData,bottomRow);
 }
 
-<<<<<<< HEAD
-    const tbody = document.getElementById("live-data-table-body");
-    const bottomRow = document.getElementById("dataInsertRow");
-    
-
-    const rowData = document.createElement("tr");
-    rowData.className = "table-rows"
-    rowData.id = nameID;
-    rowData.innerHTML = 
-        `
-            <td id="${nameID}"class="name-column">${nameID}</td>
-            <td class="description-column">${description}</td>
-            <td id="${nameID}-value" class="value-column">${value}</td>
-            <td class="unit-column">${unit}</td>
-            <td class="edit-column"><button class="remove-button" onclick="DeleteItem('${nameID}', 'parameter')">Delete</button></td>
-        `;
-        //we add id to value so we can modify it when data arrives
-        //we add id to name so we can check if already exists
-
-    tbody.insertBefore(rowData,bottomRow);
-}
-
 function AddActionRow(msgjson){
     let actionID = msgjson.actionID
     let actionDescription = msgjson.actiondescription
-    let actionDescription = msgjson.actiondescription
-=======
-function AddActionRow(msgjson){
-    let actionID = msgjson.actionID
-    let actionDescription = msgjson.actiondescription
->>>>>>> 10c93b8d5092e82a88f72ab014355562d90f16b8
 
     const tbody = document.getElementById("action-table-body");
     const bottomRow = document.getElementById("actionInsertRow");
@@ -297,12 +232,7 @@ function SaveUserItem(storeType){
         msgJson.unit = unit;
 
         if(document.getElementById(`${name}`)){
-<<<<<<< HEAD
-            showToast("Parameter already exists");
-            return;
-=======
             showToast("Parameter already exists")
->>>>>>> 10c93b8d5092e82a88f72ab014355562d90f16b8
         }
         
         
