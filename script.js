@@ -67,8 +67,8 @@ function ActivateAction(actionID){
 }
 
 //we call it to default the selection
-//GetMonitorData(document.getElementById("monitor-button"));
-GetActions(document.getElementById("action-button"));
+GetMonitorData(document.getElementById("monitor-button"));
+//GetActions(document.getElementById("action-button"));
 
 //websocket path to backend server
 const ws = new WebSocket('ws://dolphinsibiu.ddns.net:1337');
@@ -85,6 +85,8 @@ ws.addEventListener("open", () =>{
     ws.send(JSON.stringify(authdata));
 
     console.log("Connected websocket to backend server.")
+
+    GetUserConfig();
 })
 
 ws.addEventListener("message", (message)=>{
@@ -94,6 +96,7 @@ ws.addEventListener("message", (message)=>{
     console.log(msgjson)
     if(msgjson.type){
         if(msgjson.type === "data"){
+            
             //if the live data row doesn't exist we just add it to the table
             if(document.getElementById(`${msgjson.nameID}-value`) === null){
                 AddLiveDataRow(msgjson)
@@ -106,6 +109,22 @@ ws.addEventListener("message", (message)=>{
         }
         else if(msgjson.type === "add"){
             AddLiveDataRow(msgjson)
+        }
+        else if(msgjson.type === "user-config"){
+
+            console.log(msgjson)
+            if(msgjson.parameters.length > 0){
+
+                msgjson.parameters.forEach(parameter => {
+                    AddLiveDataRow(parameter);
+                });
+            }
+            if(msgjson.actions.length > 0){
+
+                msgjson.actions.forEach(action => {
+                    AddActionRow(action);
+                });
+            }
         }
         
     }
@@ -128,33 +147,142 @@ function AddLiveDataRow(msgjson){
     if(document.getElementById(`${msgjson.nameID}-value`)){
         return;
     }
+
     let nameID = msgjson.nameID;
     let description = msgjson.description;
     let unit = msgjson.unit;
     let value = "0";
 
-    document.getElementById("live-data-table-body").innerHTML +=
-        `<tr id="${nameID}" class="table-rows">
-            <th class="name-column">${nameID}</th>
-            <th class="description-column">${description}</th>
-            <th id = "${nameID}-value" class="value-column">${value}</th>
-            <th class="unit-column">${unit}</th>
-        </tr>`;
+    const tbody = document.getElementById("live-data-table-body");
+    const bottomRow = document.getElementById("dataInsertRow");
+    
+
+    const rowData = document.createElement("tr");
+    rowData.className = "table-rows"
+    rowData.id = nameID;
+    rowData.innerHTML = 
+        `
+            <td id="${nameID}"class="name-column">${nameID}</td>
+            <td class="description-column">${description}</td>
+            <td id="${nameID}-value" class="value-column">${value}</td>
+            <td class="unit-column">${unit}</td>
+            <td class="edit-column"><button class="remove-button" onclick="DeleteItem('${nameID}', 'parameter')">Delete</button></td>
+        `;
+        //we add id to value so we can modify it when data arrives
+        //we add id to name so we can check if already exists
+
+    tbody.insertBefore(rowData,bottomRow);
 }
+
 function AddActionRow(msgjson){
     let actionID = msgjson.actionID
-    let actionDescription = msgjson.actionDescription
+    let actionDescription = msgjson.actiondescription
 
-    document.getElementById("action-table-body").innerHTML +=
-        `<tr id="${actionID}" class="table-rows">
-            <th class="name-column">${actionID}</th>
-            <th class="description-column">${actionDescription}</th>
-            <th class="action-button-column"><button onclick="ActivateAction('${actionID}')" class="action-run-button">Run</button></th>
-        </tr>`;
+    const tbody = document.getElementById("action-table-body");
+    const bottomRow = document.getElementById("actionInsertRow");
+
+    const rowData = document.createElement("tr");
+    rowData.className = "table-rows"
+    rowData.id = actionID;
+    rowData.innerHTML =
+        `
+            <td id="${actionID}"class="name-column">${actionID}</td>
+            <td class="description-column">${actionDescription}</td>
+            <td class="action-status-column">Status</td>
+            <td class="action-button-column"><button onclick="ActivateAction('${actionID}')" class="action-run-button">Run</button></td>
+            <td class="edit-column"><button class="remove-button" onclick="DeleteItem('${actionID}', 'action')">Delete</button></td>
+        `;
+
+    tbody.insertBefore(rowData,bottomRow);
+}
+//we fill the dashboard with all of users parameters / actions
+function GetUserConfig(){
+    const msgJson = {};
+    msgJson.APIKey = API_KEY;
+    msgJson.type = "load-user-config"
+
+    ws.send(JSON.stringify(msgJson))
+
 }
 
+//method to send user created parameter / action to backend for storing in db
+function SaveUserItem(storeType){
 
-function AddAction(actionName, actionDescription = "Uninitialised Description"){
+    const msgJson = {};
+    msgJson.APIKey = API_KEY;
+    msgJson.type = "store"
+    msgJson.storetype = storeType
+    if(storeType === 'parameter'){
+        const name = document.getElementById("parameter-name-input").value;
+        document.getElementById("parameter-name-input").value = "";
+
+        const description = document.getElementById("parameter-description-input").value;
+        document.getElementById("parameter-description-input").value = "";
+
+        const unit = document.getElementById("parameter-unit-input").value;
+        document.getElementById("parameter-unit-input").value = "";
+
+        if(name == "" || description == "" || unit == ""){
+            showToast("Not all fields completed")
+            return;
+        }
+
+        msgJson.nameID = name;
+        msgJson.description = description;
+        msgJson.unit = unit;
+
+        if(document.getElementById(`${name}`)){
+            showToast("Parameter already exists")
+        }
+        
+        
+        AddLiveDataRow(msgJson)
+
+        ws.send(JSON.stringify(msgJson))
+        
+    }
+
+    if(storeType === 'action'){
+        const name = document.getElementById("action-name-input").value;
+        document.getElementById("action-name-input").value = "";
+
+        const description = document.getElementById("action-description-input").value;
+        document.getElementById("action-description-input").value = "";
+
+        if(name == "" || description == ""){
+            showToast("Not all fields completed")
+            return;
+        }
+
+        msgJson.actionID = name;
+        msgJson.actiondescription = description;
+
+        if(document.getElementById(`${name}`)){
+            showToast("Parameter already exists")
+        }
+
+        AddActionRow(msgJson)
+
+        ws.send(JSON.stringify(msgJson))
+    }
+    console.log(msgJson)
+}
+
+function DeleteItem(name, itemType){
+    const msgJson = {}
+    msgJson.APIKey = API_KEY;
+    msgJson.type = "remove"
+    msgJson.itemtype = itemType;
+    msgJson.name = name;
+
+    ws.send(JSON.stringify(msgJson));
+    console.log("Sent delete json")
+
+    document.getElementById(name)?.remove();
+}
+
+//for console use testing
+function AddTestAction(actionName, actionDescription = "Uninitialised Description"){
     actionjson = {
         actionID: actionName,
         actionDescription, actionDescription

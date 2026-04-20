@@ -63,15 +63,11 @@ span{
     display:block;
     background-color: #28b498;
     width: 15vw;
-    
 }
 .data-panel{
     display:block;
     width: 85vw;
     background-color: #F2F2F2;
-    
-    border-width: 1px;
-    border-color: black;
 }
 
 .option-buttons{
@@ -97,43 +93,47 @@ table{
     border-collapse: collapse;
     table-layout: fixed;
     width: 100%;
+}
+thead{
+    width: 100%;
     font-family: 'roboto';
-    font-weight: 500;
+    font-weight: bold;
+}
+tbody{
+    font-size: 80%;
+    font-family: 'roboto';
+    font-weight: bold;
+    row-gap: 50px;
 }
 td, th{
     border-bottom: 1px solid rgb(145, 145, 145);
+    text-align: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
+
 tbody tr:last-child td,
 tbody tr:last-child th {
     border-bottom: none;
 }
-.name-column{
 
+.name-column{
+    width: 20%;
 }
 .description-column{
+    width: 60%;
+}
+.value-column, .action-status-column{
+    width: 10%;
+}
+.unit-column, .action-button-column{
+    width: 10%;
+}
+.edit-column{
+    width: 10%;
+}
 
-}
-.value-column{
 
-}
-.unit-column{
-    
-}
-.action-button-column{
-
-}
-
-
-th{
-    width: 1%;
-    
-}
-thead{
-    font-size: 100%;
-}
-tbody{
-    font-size: 80%;
-}
 .action-run-button{
     background-color: #28b498;
     font-size: 2vh;
@@ -169,5 +169,22 @@ tbody{
 .api-btn{
     background-color: #176d5c;
     border: none;
+    cursor: pointer;
+}
+
+.placeholder{
+    text-align: center;
+    width: 80%;
+}
+.remove-button{
+    background-color: #e12d2d;
+    font-size: 2vh;
+    text-decoration: none;
+    font-family: 'Roboto', sans-serif;
+    color: #ffffff;
+    text-align: center;
+    padding: 0.4vw 1.2svw;
+    border: none;
+    border-radius: 10px;
     cursor: pointer;
 }
