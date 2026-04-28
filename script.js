@@ -60,6 +60,7 @@ function ActivateAction(actionID){
     try{
         ws.send(JSON.stringify(msgjson));
         console.log(`Sent ActivateAction to server, action: ${actionID}`)
+        document.getElementById(`${actionID}-status`).innerHTML = "Running";
     }
     catch (error) {
         console.log(`Failed to use websocket to send json.\nError: ${error}`)
@@ -70,7 +71,6 @@ function ActivateAction(actionID){
 //we call it to default the selection
 GetMonitorData(document.getElementById("monitor-button"));
 //GetActions(document.getElementById("action-button"));
-
 
 //used to announce server that user is online and can receive data
 ws.addEventListener("open", () =>{
@@ -126,6 +126,10 @@ ws.addEventListener("message", (message)=>{
                 });
             }
             break;
+        case "action_status":
+            UpdateActionStatus(msgjson);
+            break;
+
         default:
             console.log("Received unknown message");
     }
@@ -143,7 +147,12 @@ function UpdateLiveDataRow(msgjson){
 
     document.getElementById(`${nameID}-value`).innerHTML = msgjson.value;
 }
+function UpdateActionStatus(msgjson){
+    console.log(msgjson)
+    const actionID = msgjson.actionID;
+    document.getElementById(`${actionID}-status`).innerHTML = msgjson.status;
 
+}
 function AddLiveDataRow(msgjson){
     //if the parameter already exists we dont add it lol
     if(document.getElementById(`${msgjson.nameID}-value`)){
@@ -190,7 +199,7 @@ function AddActionRow(msgjson){
         `
             <td id="${actionID}"class="name-column">${actionID}</td>
             <td class="description-column">${actionDescription}</td>
-            <td class="action-status-column">Status</td>
+            <td id ="${actionID}-status" class="action-status-column">-</td>
             <td class="action-button-column"><button onclick="ActivateAction('${actionID}')" class="action-run-button">Run</button></td>
             <td class="edit-column"><button class="remove-button" onclick="DeleteItem('${actionID}', 'action')">Delete</button></td>
         `;
