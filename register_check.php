@@ -50,25 +50,44 @@ else{
                 "parameters" => []
                 ]);
             
-            $apiKey = bin2hex(random_bytes(24));
-            $apiKey = strtoupper($apiKey);
-            $slqMessage = "INSERT INTO users (username,email, password, api_key, user_config) VALUES(
-                            '$username',
-                            '$email',
-                            '$hashedPass',
-                            '$apiKey',
-                            '$userConfig'
-                            )";
-            try{
             
-            $conn->query($slqMessage);
-            $conn->close();
-            header("Location: login");
-            exit();
+            do{
+                $apiKey = bin2hex(random_bytes(24));
+                
+                $slqMessage = $conn->prepare("SELECT id FROM users WHERE api_key = ?");
+                $slqMessage->bind_param("s", $apiKey);
+                $slqMessage->execute();
+                $result = $slqMessage->get_result();
+
+            }while($result->num_rows > 0);
+
+            $slqMessage = $conn->prepare("
+                INSERT INTO users (username, email, password, api_key, user_config)
+                VALUES (?, ?, ?, ?, ?)
+                ");
+
+
+            try{
+
+                $slqMessage->bind_param("sssss", $username, $email, $hashedPass, $apiKey, $userConfig);
+
+                $slqMessage->bind_param(
+                "sssss",
+                $username,
+                $email,
+                $hashedPass,
+                $apiKey,
+                $userConfig
+                );
+
+                $slqMessage->execute();
+                $conn->close();
+                header("Location: login");
+                exit();
             }
             catch(mysqli_sql_exception $e){
                 echo $e->getMessage();
-                $_SESSION['error_message'] = 'Internal error when quering, please try again later';
+                $_SESSION['error_message'] = 'Internal error when querring, please try again later';
             }
             
 

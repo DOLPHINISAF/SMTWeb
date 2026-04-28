@@ -4,7 +4,7 @@ SELECTED_BGCOLOR = "#F2F2F2"
 
 let visible = false;
 //websocket path to backend server
-const ws = new WebSocket('ws://dolphinsibiu.ddns.net:1337');
+const ws = new WebSocket('wss://dolphinsibiu.ddns.net:1337');
 
 function GetMonitorData(elem){
     document.getElementById("action-button").style.backgroundColor = UNSELECTED_BGCOLOR;
