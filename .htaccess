@@ -2,3 +2,5 @@ RewriteEngine on
 RewriteRule ^login$ login.php
 RewriteRule ^register$ register.php
 RewriteRule ^dashboard$ dashboard.php
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]

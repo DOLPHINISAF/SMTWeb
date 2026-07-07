@@ -1,54 +1,8 @@
 
-UNSELECTED_BGCOLOR = "#28b498";
-SELECTED_BGCOLOR = "#F2F2F2"
-
-let visible = false;
 //websocket path to backend server
 const ws = new WebSocket('wss://dolphinsibiu.ddns.net:1337');
 
-function GetMonitorData(elem){
-    document.getElementById("action-button").style.backgroundColor = UNSELECTED_BGCOLOR;
-    elem.style.backgroundColor  = SELECTED_BGCOLOR;
-    document.getElementById("live-data-table").style.display = "block";
-    document.getElementById("action-table").style.display = "none";
-    
-}
-function GetActions(elem){
-    document.getElementById("monitor-button").style.backgroundColor = UNSELECTED_BGCOLOR;
-    elem.style.backgroundColor  = SELECTED_BGCOLOR;
-    document.getElementById("live-data-table").style.display = "none";
-    document.getElementById("action-table").style.display = "block";
-    
-}
 
-function toggleApiKey() {
-    const el = document.getElementById("api-key-text");
-
-    if (visible) {
-        el.innerHTML = "****************************************";
-    } else {
-        el.innerHTML = API_KEY;
-    }
-
-    visible = !visible;
-}
-function copyApiKey() {
-    const el = document.getElementById("api-key-text");
-
-    navigator.clipboard.writeText(API_KEY);
-
-    // Optional feedback
-    showToast("API key copied!")
-}
-function showToast(message) {
-    const toast = document.getElementById("toast");
-    toast.textContent = message;
-    toast.classList.add("show");
-
-    setTimeout(() => {
-        toast.classList.remove("show");
-    }, 2000);
-}
 
 function ActivateAction(actionID){
 
@@ -68,9 +22,6 @@ function ActivateAction(actionID){
     
 }
 
-//we call it to default the selection
-GetMonitorData(document.getElementById("monitor-button"));
-//GetActions(document.getElementById("action-button"));
 
 //used to announce server that user is online and can receive data
 ws.addEventListener("open", () =>{
@@ -109,9 +60,6 @@ ws.addEventListener("message", (message)=>{
 
             document.getElementById(`${nameID}-value`).innerHTML = msgjson.data;
             break;
-        case "add":
-            AddLiveDataRow(msgjson)
-            break;
         case "user-config":
             if(msgjson.parameters.length > 0){
 
@@ -129,7 +77,15 @@ ws.addEventListener("message", (message)=>{
         case "action_status":
             UpdateActionStatus(msgjson);
             break;
+        case "newApiKey":
+            showToast("Generated new API key");
+            API_KEY = msgjson.apiKey;
+            if(visible){
+                document.getElementById("api-key-text").innerHTML = API_KEY;
+            }
+            
 
+            break;
         default:
             console.log("Received unknown message");
     }
@@ -245,6 +201,8 @@ function SaveUserItem(storeType){
 
         if(document.getElementById(`${name}`)){
             showToast("Parameter already exists")
+
+            return;
         }
         
         
@@ -270,7 +228,8 @@ function SaveUserItem(storeType){
         itemStoreJson.actiondescription = description;
 
         if(document.getElementById(`${name}`)){
-            showToast("Parameter already exists")
+            showToast("Parameter already exists");
+            return;
         }
 
         AddActionRow(itemStoreJson)
@@ -290,5 +249,16 @@ function DeleteItem(name, itemType){
     ws.send(JSON.stringify(deleteItemJson));
     console.log("Sent delete json")
 
-    document.getElementById(name)?.remove();
+    document.getElementById(name).remove();
 }
+
+function GenerateNewApiKey(){
+    const changeApiJson = {}
+    changeApiJson.APIKey = API_KEY;
+    changeApiJson.type = "changeAPI";
+
+    ws.send(JSON.stringify(changeApiJson));
+    
+    console.log("Sent changeAPI json")
+}
+

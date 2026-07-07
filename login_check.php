@@ -34,6 +34,7 @@ else{
         if(password_verify($password, $row['password'])){
             $_SESSION['username'] = $username;
             $_SESSION['APIKEY'] = $row['api_key'];
+            $_SESSION['USER_ID'] = $row['id'];
             header("Location: dashboard");
             exit();
         }
